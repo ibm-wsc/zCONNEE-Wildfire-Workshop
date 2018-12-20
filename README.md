@@ -1,2 +1,1 @@
-# zCONNEE-Wildfire-Workshop
-Washington System Center material for the z/OS Connect Wildfire Workshop
+This repository contains material from the z/OS COnnect EE Wildfire workshops run by the IBM Washington Systems Center.
