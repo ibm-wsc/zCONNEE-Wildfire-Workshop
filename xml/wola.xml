@@ -1,0 +1,1 @@
+<server description="WOLA"> <featureManager>       <feature>zosLocalAdapters-1.0</feature> </featureManager>  <zosLocalAdapters wolaGroup="ZCEESRVR"      wolaName2="ZCEESRVR"      wolaName3="ZCEESRVR"/>  <connectionFactory id="wolaCF"      jndiName="eis/ola">      <properties.ola/>  </connectionFactory></server>

@@ -1,0 +1,16 @@
+<server description="Admin Center">
+
+  <!-- Enable features -->
+  <featureManager>
+     <feature>adminCenter-1.0</feature>
+  </featureManager>
+
+  <remoteFileAccess>
+     <writeDir>${server.config.dir}</writeDir>
+  </remoteFileAccess>
+
+  <administrator-role>
+     <user>Fred</user>
+  </administrator-role>
+
+</server>

@@ -1,1 +1,22 @@
-ddd
+<server description="basic security">
+
+    <!-- Enable features -->
+    <featureManager>
+        <feature>appSecurity-2.0</feature>
+    </featureManager>
+
+    <keyStore id="defaultKeyStore" password="Liberty"/>
+
+    <webAppSecurity allowFailOverToBasicAuth="true" />
+
+    <basicRegistry id="basic1" realm="zosConnect">
+        <user name="Fred" password="fredpwd" />
+    </basicRegistry>
+
+    <authorization-roles id="zos.connect.access.roles">
+        <security-role name="zosConnectAccess">
+            <user name="Fred"/>
+        </security-role>
+    </authorization-roles>
+
+</server>
