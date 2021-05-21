@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="OP">
+
+    <!-- Enable features -->
+    <featureManager>
+        <feature>openidConnectServer-1.0</feature>
+        <feature>transportSecurity-1.0</feature>
+        <feature>appSecurity-2.0</feature>
+    </featureManager>
+
+    <webAppSecurity allowFailOverToBasicAuth="true" />
+
+    <sslDefault sslRef="OPSSLSettings" />
+
+    <ssl id="OPSSLSettings"
+       clientAuthentication="false"
+       clientAuthenticationSupported="true"
+       keyStoreRef="OPServerKeyStore"
+       trustStoreRef="OPServerKeyStore" />
+
+    <keyStore fileBased="false" id="OPServerKeyStore"
+     location="safkeyring:///OpServer.KeyRing"
+     password="password" readOnly="true"
+     type="JCERACFKS"/>
+
+  <!-- Key store that contains certificate used to sign JWT -->
+  <keyStore fileBased="false" id="jwtStore"
+   location="safkeyring:///JWT.KeyRing"
+   password="password" readOnly="true" type="JCERACFKS"/>
+
+ <!-- Define OIDC Provider called OP
+   It is configured so that SSL is NOT used -->
+
+ <openidConnectProvider id="OP"
+   signatureAlgorithm="RS256"
+   keyStoreRef="jwtStore"
+   oauthProviderRef="OIDC" >
+ </openidConnectProvider>
+ <oauthProvider id="OIDC"
+       httpsRequired="false"
+       jwtAccessToken="true"
+       autoAuthorize ="true"
+       customLoginURL="http://wg31.washington.ibm.com:26212/customOidc/login.jsp"
+       accessTokenLifetime="60">
+       <autoAuthorizeClient>rp</autoAuthorizeClient>
+       <localStore>
+         <client name="rp"
+          displayname="rp"
+          grantType="implicit"
+          redirect="http://wg31.washington.ibm.com:26222/oidcclient/redirect/RP"
+          scope="openid profile scope1 email phone address"
+          enabled="true"
+          resourceIds="myZcee"/>
+         </localStore>
+  </oauthProvider>
+
+  <!-- Define OIDC Provider called OPssl -->
+  <openidConnectProvider id="OPssl"
+     signatureAlgorithm="RS256"
+     keyStoreRef="jwtStore"
+     oauthProviderRef="OIDCssl" >
+  </openidConnectProvider>
+
+  <oauthProvider id="OIDCssl"
+      httpsRequired="true"
+      jwtAccessToken="true"
+      autoAuthorize ="true"
+      accessTokenLifetime="60">
+      <!-- Define OIDC Client for Implicit flow over SSL -->
+      <autoAuthorizeClient>rpSsl</autoAuthorizeClient>
+      <localStore>
+       <client name="rpSsl"
+       displayname="rpSsl"
+       grantType="implicit"
+ redirect="https://wg31.washington.ibm.com:26223/oidcclient/redirect/RPssl"
+       scope="openid profile scope1 email phone address"
+       enabled="true"
+       resourceIds="myZcee"/>
+      </localStore>
+
+   <!-- Define OIDC Client for Authentication code flow over SSL -->
+   <autoAuthorizeClient>rpSslToken</autoAuthorizeClient>
+    <localStore>
+     <client name="rpSslToken"
+      secret="secret"
+      displayname="rpSslToken"
+redirect="https://wg31.washington.ibm.com:26223/oidcclient/redirect/RPsslToken"
+      scope="openid profile scope1 email phone address"
+      enabled="true"
+      resourceIds="myZcee"/>
+    </localStore>
+  </oauthProvider>
+
+</server>

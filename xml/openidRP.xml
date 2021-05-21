@@ -1,0 +1,181 @@
+<server description="walrp3a">
+
+ <!-- This is the RP Server -->
+
+ <!-- Enable features -->
+ <featureManager>
+    <feature>jsp-2.3</feature>
+    <feature>servlet-3.1</feature>
+    <feature>appSecurity-2.0</feature>
+    <feature>websocket-1.1</feature>
+    <feature>cdi-1.2</feature>
+    <feature>openidConnectClient-1.0</feature>
+    <feature>transportSecurity-1.0</feature>
+    <feature>jsonp-1.0</feature>
+  </featureManager>
+
+  <sslDefault sslRef="RPSSLSettings"
+     outboundSSLRef="zceeSSLSettings"/>
+
+  <ssl clientAuthentication="false" id="RPSSLSettings"
+    keyStoreRef="RpServerKeyStore"
+    trustStoreRef="zceeTrustStore"/>
+
+  <keyStore fileBased="false" id="RpServerKeyStore"
+    location="safkeyring:///RPServer.KeyRing"
+    password="password" readOnly="true" type="JCERACFKS"/>
+
+  <!-- Use following if want to access RACF Key ring used by zCEE server-->
+
+  <keyStore fileBased="false" id="zceeTrustStore"
+      location="safkeyring:///zCEE.Keyring"
+      password="password" readOnly="true" type="JCERACFKS"/>
+
+
+ <!-- Auth Filter used to match access to our application over HTTP -->
+
+ <authFilter id="jwtIvpAuthFilter">
+     <requestUrl id="jwtIvpDemo"
+      urlPattern="/CallRestApiWithJwtDemoWeb/noSsl/InvokeRestWithJwt"
+      matchType="contains" />
+ </authFilter>
+
+ <!-- Define OIDC Client called RP.
+   It is configured so that SSL is NOT used -->
+
+ <openidConnectClient id="RP"
+      authFilterRef="jwtIvpAuthFilter"
+      grantType="implicit"
+      httpsRequired="false"
+      scope="openid profile email photo"
+      clientId="rp"
+      redirectToRPHostAndPort="http://wg31.washington.ibm.com:26222"
+      authorizationEndpointUrl="http://wg31.washington.ibm.com:26212/oidc/endpoint/OP/authorize"
+      issuerIdentifier="http://wg31.washington.ibm.com:26212/oidc/endpoint/OP"
+      signatureAlgorithm="RS256"
+      trustAliasName="OP3-JWT-Signer"
+      trustStoreRef="jwtTrustStore"
+      authnSessionDisabled="true"
+      disableLtpaCookie="true">
+  </openidConnectClient>
+
+ <!-- Auth Filter used to match access to our application over SSL -->
+
+ <authFilter id="jwtIvpSslAuthFilter">
+   <requestUrl id="jwtIvpSslDemo"
+       urlPattern="/CallRestApiWithJwtDemoWeb/ssl/InvokeRestWithJwt"
+       matchType="contains" />
+ </authFilter>
+
+ <!-- Define OIDC Client called RPssl.
+   It is configured so that SSL is used -->
+
+ <openidConnectClient id="RPssl"
+     authFilterRef="jwtIvpSslAuthFilter"
+     grantType="implicit"
+     httpsRequired="true"
+     scope="openid profile email photo"
+     clientId="rpSsl"
+      redirectToRPHostAndPort="https://wg31.washington.ibm.com:26223"
+      authorizationEndpointUrl="https://wg31.washington.ibm.com:26213/oidc/endpoint/OPssl/authorize"
+      issuerIdentifier="https://wg31.washington.ibm.com:26213/oidc/endpoint/OPssl"
+      signatureAlgorithm="RS256"
+      trustAliasName="OP3-JWT-Signer"
+      trustStoreRef="jwtTrustStore"
+      authnSessionDisabled="true"
+      disableLtpaCookie="true">
+ </openidConnectClient>
+
+ <!-- Auth Filter used to match access to our application over SSL
+   for OIDC Authentication code flow -->
+
+ <authFilter id="jwtIvpSslTokenAuthFilter">
+   <requestUrl id="jwtIvpSslDemo"
+       urlPattern="/CallRestApiWithJwtDemoWeb/sslAuthToken/InvokeRestWithJwt"
+       matchType="contains" />
+ </authFilter>
+
+ <!-- Define OIDC Client called RPsslToken
+   It is configured so that SSL is used This OIDC Client supports OIDC
+   Authentication Code flow -->
+
+ <openidConnectClient id="RPsslToken"
+     authFilterRef="jwtIvpSslTokenAuthFilter"
+      httpsRequired="true"
+      scope="openid profile email photo"
+      clientId="rpSslToken"
+      clientSecret="secret"
+      redirectToRPHostAndPort="https://wg31.washington.ibm.com:26223"
+      authorizationEndpointUrl="https://wg31.washington.ibm.com:26213/oidc/endpoint/OPssl/authorize"
+      issuerIdentifier="https://wg31.washington.ibm.com:26213/oidc/endpoint/OPssl"
+      tokenEndpointUrl="https://wg31.washington.ibm.com:26213/oidc/endpoint/OPssl/token"
+      signatureAlgorithm="RS256"
+      trustAliasName="OP3-JWT-Signer"
+      trustStoreRef="jwtTrustStore"
+      authnSessionDisabled="true"
+      disableLtpaCookie="true"
+      sslRef="rpServerSsl">
+ </openidConnectClient>
+
+ <!-- Location of keystore or RACF Keyring that contains
+ certifcate used to sign JWT created by the OP Server -->
+
+ <!-- Uncomment following if want to use RACF keyring that contains
+   certificate used to sign JWT -->
+ <keyStore fileBased="false" id="jwtTrustStore"
+ location="safkeyring:///JWT.KeyRing"
+ password="password" readOnly="true" type="JCERACFKS"/>
+
+ <!-- SSL Defintion that identifies Key store and trust store needed
+   to support OIDC Authtentication code flow -->
+
+
+ <!-- Disable automatically expand WAR files and EAR files -->
+ <applicationManager autoExpand="false"/>
+
+ <!-- Specify where our example application is located -->
+
+    <application type="ear" id="JwtTester" name="JwtDemo"
+             location="${server.config.dir}/apps/CallRestApiWithJwtDemo.ear">
+    <application-bnd>
+    <security-role name="myApp">
+    <special-subject type="ALL_AUTHENTICATED_USERS" />
+    </security-role>
+    </application-bnd>
+ </application>
+
+ <!-- SSL definition that tells Liberty what key store and trust store to use for
+   the outbound SSL connection that our application makes to zCEE server -->
+
+ <ssl id="zceeSSLSettings"
+   clientAuthentication="true"
+   keyStoreRef="zceeRacfCert" trustStoreRef="zceeRacfCert" >
+   <outboundConnection host="wg31.washington.ibm.com" port="26233"
+       clientCertificate="zCEE-Client-WSGuest"/>
+ </ssl>
+ <!-- If target port in zCEE requires a client certiticate, then Liberty will
+   send client certificate from following referenced key store -->
+
+ <!-- Use following to obtain client cert from RACF keyring -->
+ <keyStore fileBased="false" id="zceeRacfCert"
+     location="safkeyring:///zCEE.Client.KeyRing"
+      password="password" readOnly="true" type="JCERACFKS"/>
+
+
+ <!-- Property that our application locates via JNDI lookup
+   Value is URL to access zCEE API over HTTP -->
+ <jndiEntry
+     jndiName="jwtDemoProp/zceeApiUrl"
+     value="http://wg31.washington.ibm.com:26231/jwtIvpDemoApi/snoop"
+ />
+
+ <!-- Property that our application locates via JNDI lookup
+   Value is URL to access zCEE API over SSL -->
+ <jndiEntry
+     jndiName="jwtSslDemoProp/zceeApiUrl"
+     value="https://wg31.washington.ibm.com:26231/jwtIvpDemoApi/snoop"
+ />
+
+
+
+</server>
