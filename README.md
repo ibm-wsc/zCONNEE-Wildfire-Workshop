@@ -1,1 +1,1 @@
-This repository contains material from the z/OS Connect EE Wildfire workshops run by the IBM Washington Systems Center. It is should be referenced frequently for updates to the presentations, exerices, samples and other material.
+This repository contains material from the z/OS Connect EE Wildfire workshops run by the IBM Washington Systems Center. It is should be referenced frequently for updates to the presentations, exercices, samples and other material.
