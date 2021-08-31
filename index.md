@@ -31,5 +31,5 @@ All lab instructions are in the "Lab Docs" folder on your remote desktop, or can
 <em>Note you will need a confirmed registration to access the lab.</em>
 </div>
 
-## Contact
+## Help 
 Having trouble with labs? Send an email to [Mitch Johnson](mailto: mitchj@us.ibm.com) and we will help you sort it out.
