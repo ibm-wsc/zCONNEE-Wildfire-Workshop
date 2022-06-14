@@ -1,0 +1,31 @@
+//APIDEPLY JOB (0),'ZCEE DEPLOY',CLASS=A,REGION=0M,
+//             MSGCLASS=H,NOTIFY=*,USER=LIBSERV
+//***************************************************************
+//*  Step APIDPLOY - Use the apideploy commands to deploy an API
+//***************************************************************
+//APIDPLOY EXEC PGM=IKJEFT01,REGION=0M
+//SYSERR   DD SYSOUT=*
+//STDOUT   DD SYSOUT=*
+//STDENV   DD *
+ZCEEPATH=/shared/IBM/zosconnect/v2r0
+PATH=/shared/java/J8.0_64/bin:$PATH
+JAVA_HOME=/shared/java/J8.0_64
+//SYSTSPRT DD SYSOUT=*
+//SYSTSIN  DD *
+ BPXBATCH SH $ZCEEPATH/bin/apideploy -deploy +
+ -a /wasetc/zc2lab/Filea.aar +
+ -p /var/zosconnect/servers/myServer/resources/zosconnect/apis +
+    1> /tmp/zceeStd.out 2> /tmp/zceeStd.err
+//****************************************************************
+//*  Step COPY - Copy the apideploy commmand output to the job log
+//****************************************************************
+//COPY   EXEC PGM=IKJEFT01,DYNAMNBR=300
+//SYSTSPRT DD SYSOUT=*
+//ZCEEOUT  DD PATH='/tmp/zceeStd.out'
+//ZCEEERR  DD PATH='/tmp/zceeStd.err'
+//STDOUT   DD SYSOUT=*,DCB=(LRECL=1000,RECFM=V)
+//STDERR   DD SYSOUT=*,DCB=(LRECL=1000,RECFM=V)
+//SYSPRINT DD SYSOUT=*
+//SYSTSIN  DD *
+ OCOPY INDD(ZCEEERR) OUTDD(STDERR)
+ OCOPY INDD(ZCEEOUT) OUTDD(STDOUT)
