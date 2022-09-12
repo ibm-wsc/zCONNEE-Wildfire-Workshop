@@ -1,0 +1,15 @@
+<server description="Additional Feaures">
+
+  <!-- Enable features -->
+  <featureManager>
+     <feature>adminCenter-1.0</feature>
+     <feature>restConnector-2.0</feature>
+  </featureManager>
+
+  <remoteFileAccess>
+     <readDir>/var/zcee/includes</readDir>
+     <readDir>/global/zosconnect/includes</readDir>
+     <writeDir>${server.config.dir}</writeDir>
+  </remoteFileAccess>
+
+</server>

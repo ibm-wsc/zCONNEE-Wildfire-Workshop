@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="new server">
+
+    <!-- Enable features -->
+    <featureManager>
+        <feature>filemanager:fmProvider-2.0</feature>
+    </featureManager>
+
+ <FileManager_Connection id="default"
+ runport="2800"
+ max_timeout="1800"/>
+
+</server>

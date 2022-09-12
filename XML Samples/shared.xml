@@ -1,0 +1,1 @@
+<server description="Common APIs and Services">  <zosconnect_zosConnectAPIs location="/var/zcee/shared/apis">  </zosconnect_zosConnectAPIs>  <zosconnect_services location="/var/zcee/shared/services">  </zosconnect_services></server>

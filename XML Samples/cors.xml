@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="CICS trace">
+
+    <!-- add cors to allow cross origin access, e.g. when using swagger  doc from zOS Connect Enterprise Edition  -->
+    <cors id="defaultCORSConfig"
+          domain="/"
+          allowedOrigins="*"
+          allowedMethods="GET, POST, PUT, DELETE, OPTIONS"
+          allowedHeaders="Origin, Content-Type, Authorization, Cache-Control, Expires, Pragma"
+          allowCredentials="true"
+          maxAge="3600"/>
+
+</server>

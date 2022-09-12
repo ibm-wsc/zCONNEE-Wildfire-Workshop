@@ -1,0 +1,60 @@
+<server description="opidJWT">
+
+ <!-- Enable features -->
+ <featureManager>
+    <feature>openidConnectClient-1.0</feature>
+  </featureManager>
+
+ <authFilter id="JwtAuthnoSSLFilter">
+   <requestHeader id="jwtIvpDemoSsl"
+     name="ibmRefererUri"
+     value="/CallRestApiWithJwtDemoWeb/noSsl/InvokeRestWithJwt"
+     matchType="contains" />
+ </authFilter>
+
+ <!-- Define OIDC Client called RP. -->
+ <openidConnectClient id="RP"
+        authFilterRef="JwtAuthnoSSLFilter"
+        httpsRequired="false"
+        inboundPropagation="required"
+        scope="openid profile email photo"
+        audiences="myZcee"
+        issuerIdentifier="http://wg31.washington.ibm.com:26212/oidc/endpoint/OP"
+        signatureAlgorithm="RS256"
+        trustAliasName="JWT-Signer-Certificate"
+        trustStoreRef="jwtTrustStore"
+        authnSessionDisabled="true"
+        disableLtpaCookie="true">
+      </openidConnectClient>
+
+ <!-- Auth Filter used to match access to our application over SSL -->
+
+ <authFilter id="JwtAuthSSLFilter">
+   <requestHeader id="jwtIvpDemoSsl"
+     name="ibmRefererUri" matchType="contains"
+     value="/CallRestApiWithJwtDemoWeb/ssl/InvokeRestWithJwt" />
+ </authFilter>
+
+ <!-- Define OIDC Client called RPssl -->
+ <openidConnectClient id="RPssl"
+      httpsRequired="true"
+      authFilterRef="JwtAuthSSLFilter"
+      inboundPropagation="required"
+      scope="openid profile email photo"
+      audiences="myZcee"
+      issuerIdentifier="https://wg31.washington.ibm.com:26213/oidc/endpoint/OPssl"
+      signatureAlgorithm="RS256"
+      userIdentityToCreateSubject="sub"
+      trustAliasName="JWT-Signer-Certificate"
+      trustStoreRef="jwtTrustStore"
+      authnSessionDisabled="true"
+      disableLtpaCookie="true">
+  </openidConnectClient>
+
+ <!-- Location of keystore or RACF Keyring that contains
+ certifcate used to sign JWT created by the OP Server -->
+ <keyStore fileBased="false" id="jwtTrustStore"
+ location="safkeyring:///JWT.KeyRing"
+ password="password" readOnly="true" type="JCERACFKS"/>
+
+</server>

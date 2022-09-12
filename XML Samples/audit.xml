@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="group security">
+
+  <zosconnect_zosConnectManager
+            globalInterceptorsRef="interceptorList_g"/>
+
+  <zosconnect_authorizationInterceptor id="auth"
+            safCacheTimeout="600"/>
+
+  <zosconnect_auditInterceptor id="audit"
+            apiRequesterSmfVersion="2"
+            apiProviderSmfVersion="2"/>
+
+  <zosconnect_zosConnectInterceptors id="interceptorList_g"
+           interceptorRef="audit"/>
+
+</server>
