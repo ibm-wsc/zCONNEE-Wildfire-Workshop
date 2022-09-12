@@ -1,1 +1,0 @@
-<server description="HATS"> <zosconnect_zosConnectServiceRestClientConnection id="HatsConn"       host="wg31.washington.ibm.com"       port="29080" /></server>

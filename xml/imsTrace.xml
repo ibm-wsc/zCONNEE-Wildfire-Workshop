@@ -1,1 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><server description="IMS trace"><logging traceSpecification="                             com.ibm.ims.*=all:                             com.ibm.j2ca.RAIMSTM=all:                             com.ibm.zosconnect.wv*=FINEST:                             zosConnect=all                              "/></server>

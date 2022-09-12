@@ -1,1 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><server description="CICS trace"><logging traceSpecification="                             zosConnectApiRequester=all:                             zosConnectServiceCics=all:                             com.ibm.zosconnect.wv*=FINEST:                             zosConnect=all                              "/></server>
