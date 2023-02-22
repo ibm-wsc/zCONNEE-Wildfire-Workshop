@@ -1,0 +1,202 @@
+---------- Db2 REST services and z/OS Connect --------------
+------------- Developing a z/OS Connect APIs that accesses Db2 ----------
+
+https://designer.washington.ibm.com:9449/zosConnect/designer/
+
+Record for employee number {{$apiRequest.body.employeeNumber}} was added successfully
+
+Record for employee number {{$apiRequest.body.employeeNumber}} was not added - {{$zosAssetResponse.body.StatusDescription}}
+
+A severe error has occurred - {{$zosAssetResponse.body.StatusDescription}}
+
+$count($zosAssetResponse.body."ResultSet Output" )
+
+Record for employee number  {{$apiRequest.pathParameters.employee}} was not found
+
+A severe error has occurred - {{$zosAssetResponse.body.StatusDescription}}
+
+------------- Testing the APIs POST and GET methods ----------------------
+
+{
+  "employeeNumber": "948478",
+  "firstName": "Matt",
+  "middleInitial": "T",
+  "lastName": "Johnson",
+  "departmentCode": "C00",
+  "phoneNumber": "0065",
+  "dateOfHire": "10/15/1980",
+  "job": "Staff",
+  "educationLevel": 21,
+  "sex": "M",
+  "dateOfBirth": "06/18/1960",
+  "salary": 3999.99,
+  "lastBonus": 399.99,
+  "lastCommission": 119.99
+}
+
+----------- Compete the configuration of the API (Optional) ----------------
+
+------------ PUT /employees/{employee---------------------------------------
+
+Record for employee {{$apiRequest.pathParameters.employee}} successfully updated
+
+Record for employee number {{$apiRequest.pathParameters.employee}} was not found
+
+A severe error has occurred - {{$zosAssetResponse.body.StatusDescription}}
+
+------------ GET /employees/details/{employee}-------------------------------
+
+$count($zosAssetResponse.body."ResultSet Output" )
+
+Record for employee number  {{$apiRequest.pathParameters.employee}} was not found
+
+A severe error has occurred - {{$zosAssetResponse.body.StatusDescription}}
+
+------------ DELETE /employees/{employee}------------------------------------
+
+Record for employee number {{$apiRequest.body.employeeNumber}} was deleted successfully
+
+Record for employee number {{$apiRequest.pathParameters.employee}} was not found
+ 
+A severe error has occurred - {{$zosAssetResponse.body.StatusDescription}}
+
+------------ GET /roles/{job} -----------------------------------------------
+
+$count($zosAssetResponse.body."ResultSet Output" )
+
+No records were found
+
+A severe error has occurred - {{$zosAssetResponse.body.StatusDescription}}
+
+
+--------- Testing APIs deployed in a z/OS Connect Designer container ------------
+
+{
+  "employeeNumber": "948498",
+  "firstName": "Matt",
+  "middleInitial": "T",
+  "lastName": "Johnson",
+  "departmentCode": "C00",
+  "phoneNumber": "0065",
+  "dateOfHire": "10/15/1980",
+  "job": "Staff",
+  "educationLevel": 21,
+  "sex": "M",
+  "dateOfBirth": "06/18/1960",
+  "salary": 3999.99,
+  "lastBonus": 399.99, 
+  "lastCommission": 119.99
+}
+
+{
+  "salary": 5000.00,
+  "bonus": 500.00,
+  "commission": 400.00
+}
+
+
+----------  Deploying and installing APIs in a z/OS Connect Native Server -----------
+
+---------- Moving the API Web Archive file from the container to a z/OS OMVS directory-------
+
+cd C:\z\openApi3\wars
+
+cd /var/zcee/openApi3/apps
+
+------------ Updating the server xml ---------------------------------------
+
+<webApplication id="db2" contextRoot="/roster"  name="db2API"           
+  location="${server.config.dir}apps/employees.war"/>        
+  
+F  ZCEEAPI3,REFRESH,CONFIG 
+
+-------------- Defining the required RACF EJBRole resources -------------
+
+rdefine ejbrole ATSZDFLT.db2API.Manager   uacc(none)                                                                                                                                        
+
+rdefine ejbrole ATSZDFLT.db2API.Staff  uacc(none)  
+
+permit ATSZDFLT.db2API.Manager  class(ejbrole) id(fred) acc(read)                                                                                                                                        
+
+permit ATSZDFLT.db2API.Staff  class(ejbrole) id(fred) acc(read)       
+
+permit ATSZDFLT.db2API.Staff  class(ejbrole) id(user1) acc(read)     
+
+setropts raclist(ejbrole) refresh
+
+
+--------------- Testing APIs deployed in a native z/OS server -------------
+
+---------- Using Postman --------------------------------------------------------
+
+https://wg31.washington.ibm.com:9445/roster/employees/details/000010 
+
+https://wg31.washington.ibm.com:9445/roster/employees/details/121212
+
+{
+  "employeeNumber": "648478",
+  "firstName": "Matt",
+  "middleInitial": "T",
+  "lastName": "Johnson",
+  "departmentCode": "C00",
+  "phoneNumber": "0065",
+  "dateOfHire": "10/15/1980",
+  "job": "Staff",
+  "educationLevel": 21,
+  "sex": "M",
+  "dateOfBirth": "06/18/1960",
+  "salary": 3999.99,
+  "lastBonus": 399.99, 
+  "lastCommission": 119.99
+}
+
+https://wg31.washington.ibm.com:9445/roster/employees/649478
+
+{
+  "salary": 5000.00,
+  "bonus": 500.00,
+  "commission": 400.00
+}
+
+---------- Using cURL --------------------------------------------------------
+
+curl -X GET  -w " - HTTP CODE %{http_code}" --user Fred:fred --header "Content-Type: application/json" --insecure  https://wg31.washington.ibm.com:9445/roster/employees/details/000010
+
+curl -X GET  -w " - HTTP CODE %{http_code}" --user user2:user2 --header "Content-Type: application/json" --insecure  https://wg31.washington.ibm.com:9445/roster/employees/details/000010
+
+curl -X POST -w " - HTTP CODE %{http_code}" --header "Content-Type: application/json" --insecure --user Fred:fred --data @insertEmployee.json https://wg31.washington.ibm.com:9445/roster/employees/
+
+curl -X GET -w " - HTTP CODE %{http_code}" --header "Content-Type: application/json" --insecure --user Fred:fred  https://wg31.washington.ibm.com:9445/roster//roles/PRES?dept=A00
+
+curl -X DELETE -w " - HTTP CODE %{http_code}" --header "Content-Type: application/json" --insecure --user Fred:fred  https://wg31.washington.ibm.com:9445/roster/employees/000012
+
+curl -X DELETE -w " - HTTP CODE %{http_code}" --header "Content-Type: application/json" --insecure --user user1:user1  https://wg31.washington.ibm.com:9445/roster/employees/000012
+
+
+---------- Using the API Explorer----------------------------------------------------
+
+https://wg31.washington.ibm.com:9445/api/explorer
+
+{
+  "employeeNumber": "848478",
+  "firstName": "Matt",
+  "middleInitial": "T",
+  "lastName": "Johnson",
+  "departmentCode": "C00",
+  "phoneNumber": "0065",
+  "dateOfHire": "10/15/1980",
+  "job": "Staff",
+  "educationLevel": 21,
+  "sex": "M",
+  "dateOfBirth": "06/18/1960",
+  "salary": 3999.99,
+  "lastBonus": 399.99,
+  "lastCommission": 119.99
+}
+
+
+{
+  "salary": 5000.00,
+  "bonus": 500.00,
+  "commission": 400.00
+}
