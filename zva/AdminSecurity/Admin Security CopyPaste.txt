@@ -1,0 +1,158 @@
+############################################################
+# zCEE Customization - CICS Security                       #
+############################################################
+
+<include location="${server.config.dir}/includes/shared.xml" />
+
+curl -X get --cacert certauth.pem --cert fred.p12:secret --cert-type P12 https://wg31.washington.ibm.com:9443/cscvinc/employee/000100
+
+curl -X get --cacert certauth.pem --cert user1.p12:secret --cert-type P12 https://wg31.washington.ibm.com:9443/cscvinc/employee/000100
+
+CEDA EX G(*) URIMAP(BAQURIMP)
+
+<include location="${server.config.dir}/includes/apiRequesterHTTPS.xml"/>
+
+<include location="${server.config.dir}/includes/keyringOutboundMutual.xml"/>
+
+F BAQSTRT,ZCON,REFRESH
+
+
+############################################################
+# zCEE Customization - AT-TLS Security                     #
+############################################################
+
+<include location="${server.config.dir}/includes/keyringOutboundMutual.xml"/> 
+
+<include location="${server.config.dir}/includes/shared.xml"/>
+
+https://wg31.washington.ibm.com:9433/zosmf/
+
+V TCPIP,,OBEY,SYS1.TCPPARMS(TTLS)
+
+<apiRequester name="cscvinc_1.0.0" requireSecure="true"/>   
+
+############################################################
+# zCEE Customization - Db2 Security                        #
+############################################################
+
+curl -X get --cacert certauth.pem --cert fred.p12:secret --cert-type P12 https://wg31.washington.ibm.com:9443/db2/employee/000010
+
+curl -X GET --cacert certauth.pem --cert user1.p12:secret --cert-type P12 https://wg31.washington.ibm.com:9443/db2/employee/000010
+
+<include location="${server.config.dir}/includes/db2passTicket.xml"/>
+
+F BAQSTRT,REFRESH,CONFIG
+
+<include location="${server.config.dir}/includes/keyringOutboundMutual.xml"/> 
+
+<include location="${server.config.dir}/includes/shared.xml"/>
+
+https://wg31.washington.ibm.com:9433/zosmf/
+
+V TCPIP,,OBEY,SYS1.TCPPARMS(TTLS)
+
+<apiRequester name="cscvinc_1.0.0" requireSecure="true"/    
+
+<include location="${server.config.dir}/includes/db2TLS.xml"/>
+
+############################################################
+# zCEE Customization - IMS Database Security               #
+############################################################
+
+<include location="${server.config.dir}/includes/imsDatabase.xml"/>
+
+<include location="${server.config.dir}/includes/shared.xml"/>
+
+curl -X get --cacert certauth.pem --cert fred.p12:secret --cert-type P12 https://wg31.washington.ibm.com:9443/imdb/contact/LAST3
+
+curl -X get --cacert certauth.pem --cert user1.p12:secret --cert-type P12 https://wg31.washington.ibm.com:9443/imdb/contact/LAST3
+
+<include location="${server.config.dir}/includes/keyringOutboundMutual.xml"/> 
+
+https://wg31.washington.ibm.com:9433/zosmf
+
+V TCPIP,,OBEY,SYS1.TCPPARMS(TTLS)
+
+############################################################
+# zCEE Customization - IMS Transaction Security            #
+############################################################
+
+<include location="${server.config.dir}/includes/shared.xml"/>
+
+F BAQSTRT,REFRESH,CONFIG
+
+curl -X get --cacert certauth.pem --cert fred.p12:secret --cert-type P12 https://wg31.washington.ibm.com:9443/phonebook/contacts/LAST3
+
+curl -X get --cacert certauth.pem --cert user1.p12:secret --cert-type P12 https://wg31.washington.ibm.com:9443/phonebook/contacts/LAST3
+
+<include location="${server.config.dir}/includes/keyringOutboundMutual.xml"/> 
+
+https://wg31.washington.ibm.com:9433/zosmf
+
+V TCPIP,,OBEY,SYS1.TCPPARMS(TTLS)
+
+############################################################
+# zCEE Customization - MQ Security                         #
+############################################################
+
+<include location="${server.config.dir}/includes/shared.xml"/>
+<include location="${server.config.dir}/includes/mqClient.xml"/>
+
+curl -X get  -w '%{http_code}' --cacert certauth.pem --cert user1.p12:secret --cert-type P12 https://wg31.washington.ibm.com:9443/mqapi/queue
+
+curl -X POST -w '%{http_code}' --cacert certauth.pem --cert user1.p12:secret --cert-type P12 --header "Content-Type: application/json" --data @MQMessage.json https://wg31.washington.ibm.com:9443/mqapi/queue  
+
+<property name="useCallerPrincipal" value="true"/>  
+
+ZMQ1 STOP CHINIT
+
+ZMQ1 START CHINIT
+
+<include location="${server.config.dir}/includes/mqClientTLS.xml" />
+
+F BAQSTRT,REFRESH,CONFIG 
+
+F BAQSTRT,REFRESH,KEYSTORE
+
+ZMQ1 DISPLAY CHSTATUS(LIBERTY*) MCAUSER SSLCERTU
+
+curl -X POST -w '%{http_code}' --cacert certauth.pem --cert fred.p12:secret --cert-type P12 --header "Content-Type: application/json" --data @MQMessage.json https://wg31.washington.ibm.com:9443/mqapi/queue
+
+
+{
+    "MQMESSAGE": {
+        "STAT": "",
+        "ADDRX": "Cary,ENGLAND",
+        "AMOUNT": "$0999.99",
+        "PHONE": "12846293",
+        "DATEX": "26 11 81",
+        "NUMB": "000104",
+        "COMMENT": "Y",
+        "NAME": "M. B. DOMBEY"
+    }
+}
+
+############################################################
+# zCEE Customization - JWT Security                         #
+############################################################
+
+https://wg31.washington.ibm.com:26223/CallRestApiWithJwtDemoWeb/ssl/InvokeRestWithJwt
+
+https://wg31.washington.ibm.com:9463/cscvinc/employee/222222
+
+<include location="/${server.config.dir}/includes/keyingOutboundMutual.xml"/>
+
+<include location="${server.config.dir}/includes/shared.xml"/>
+<include location="${server.config.dir}/includes/oauth.xml"/>
+
+F BAQSTRT,REFRESH,CONFIG  
+
+F BAQSTRT,REFRESH,KEYSTORE 
+
+F ZCEEOPID,REFRESH,KEYSTORE   
+
+
+
+
+
+
