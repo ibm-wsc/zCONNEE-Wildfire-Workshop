@@ -4,7 +4,7 @@
 
 cd c:\z\apiRequester\miniloan
 
-curl -X POST --user user1:user1 --data-binary @miniloan.ara  --header "Content-Type: application/zip" --insecure https://wg31.washington.ibm.com:9483/zosConnect/apiRequesters
+curl -X POST --user Fred:fredpwd --data-binary @miniloan.ara  --header "Content-Type: application/zip" --insecure https://wg31.washington.ibm.com:9483/zosConnect/apiRequesters
 
 cd c:\z\apiRequester\miniloan\syslib
 
