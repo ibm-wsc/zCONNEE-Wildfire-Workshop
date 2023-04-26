@@ -1,0 +1,259 @@
+﻿
+------------- Developing a z/OS Connect APIs that accesses a CICS program ----------
+
+https://designer.washington.ibm.com:9447/zosConnect/designer/
+
+---------------- PORT /employee --------------------------------------
+
+{{$substring($now(),2,8)}} 
+
+Record with key {{$zosAssetResponse.channel.containerCscvinc."Response-Container"."FILEA-AREA".NUMB}} was successfully inserted - CICS Identity {{$zosAssetResponse.channel.containerCscvinc."Response-Container".USERID}}
+
+Duplicate record key encountered for key {{$apiRequest.body.EmployeeInsertServiceOperation.employeeData.request.employeeDetails.employeeNumber}} - CICS Identity {{$zosAssetResponse.channel.containerCscvinc."Response-Container".USERID}}
+
+A severe error occurred while inserting a record with key {{$zosAssetResponse.channel.containerCscvinc."Response-Container"."FILEA-AREA".NUMB}}  - CICS Identity {{$zosAssetResponse.channel.containerCscvinc."Response-Container".USERID}}  {{$zosAssetResponse.channel.containerCscvinc."Response-Container".CEIBRESP}}:  {{$zosAssetResponse.channel.containerCscvinc."Response-Container".CEIBRESP2}}
+
+--------------- GET /employee/{employee}
+
+Record with key {{$zosAssetResponse.channel.containerCscvinc."Response-Container"."FILEA-AREA".NUMB}} was  successfully  retrieved - CICS Identity {{$zosAssetResponse.channel.containerCscvinc."Response-Container".USERID}}
+
+Record for employee number {{$apiRequest.pathParameters.employee}} was not found
+
+A severe error occurred while retrieving a record with key {{$zosAssetResponse.channel.containerCscvinc."Response-Container"."FILEA-AREA".NUMB}}  - CICS Identity {{$zosAssetResponse.channel.containerCscvinc."Response-Container".USERID}} {{$zosAssetResponse.channel.containerCscvinc."Response-Container".CEIBRESP}}:  {{$zosAssetResponse.channel.containerCscvinc."Response-Container".CEIBRESP2}}
+
+-------Testing the API’s POST and GET methods ---------------------------------
+
+{
+    "EmployeeInsertServiceOperation": {
+        "employeeData": {
+            "request": {
+                "employeeDetails": {
+                    "employeeNumber": "948488",
+                    "date": "12/31/22",
+                    "amount": "$100.00",
+                    "address": "RTP NC",
+                    "phoneNumber": "0065",
+                    "name": "M Johnson"
+                }
+            }
+        }
+    }
+
+}
+
+----------- Compete the configuration of the API (Optional) ----------------
+
+------------ PUT /employees/{employee---------------------------------------
+
+Record with key  {{$zosAssetResponse.channel.containerCscvinc."Response-Container"."FILEA-AREA".NUMB}} was successfully updated - CICS Identity {{$zosAssetResponse.channel.containerCscvinc."Response-Container".USERID}}
+
+Record with key {{$apiRequest.pathParameters.employee}} was not found - CICS Identity {{$zosAssetResponse.channel.containerCscvinc."Response-Container".USERID}}
+
+A severe error occurred while inserting a  record  with key {{$zosAssetResponse.channel.containerCscvinc."Response-Container"."FILEA-AREA".NUMB}} - CICS Identity {{$zosAssetResponse.channel.containerCscvinc."Response-Container".USERID}} {{$zosAssetResponse.channel.containerCscvinc."Response-Container".CEIBRESP}}:   {{$zosAssetResponse.channel.containerCscvinc."Response-Container".CEIBRESP2}}
+
+
+
+------------ DELETE /employees/{employee}------------------------------------
+
+Record with key {{$zosAssetResponse.channel.containerCscvinc."Response-Container"."FILEA-AREA".NUMB}} was successfully deleted - CICS Identity {{$zosAssetResponse.channel.containerCscvinc."Response-Container".USERID}}
+
+Record with key {{$apiRequest.pathParameters.employee}} was not found - CICS Identity {{$zosAssetResponse.channel.containerCscvinc."Response-Container".USERID}}
+ 
+A severe error occurred while deleting a record with key {{$zosAssetResponse.channel.containerCscvinc."Response-Container"."FILEA-AREA".NUMB}} - CICS Identity {{$zosAssetResponse.channel.containerCscvinc."Response-Container".USERID}} {{$zosAssetResponse.channel.containerCscvinc."Response-Container".CEIBRESP}}:  {{$zosAssetResponse.channel.containerCscvinc."Response-Container".CEIBRESP2}}
+
+
+--------- Testing APIs deployed in a z/OS Connect Designer container ------------
+
+
+https://designer.ibm.com:9447/cscvinc/employee/948488
+
+
+---------- Using the API Explorer --------------- 
+
+ https://designer.ibm.com:9447/api/explorer
+
+{
+    "EmployeeInsertServiceOperation": {
+        "employeeData": {
+            "request": {
+                "employeeDetails": {
+                    "employeeNumber": "948488",
+                    "date": "12/31/22",
+                    "amount": "$100.00",
+                    "address": "RTP NC",
+                    "phoneNumber": "0065",
+                    "name": "M Johnson"
+                }
+            }
+        }
+    }
+}
+
+{
+    "EmployeeUpdateServiceOperation": {
+        "employeeData": {
+            "request": {
+                "employeeDetails": {
+                    "status": "s",
+                    "name": "A Johnson",
+                    "address": "Apex NC",
+                    "phoneNumber": "0065",
+                    "date": "01/31/23",
+                    "amount": "500",
+                    "COMMENT": "updated"
+                }
+            }
+        }
+    }
+}
+
+----------  Deploying and installing APIs in a z/OS Connect Native Server -----------
+
+---------- Moving the API Web Archive file from the container to a z/OS OMVS directory-------
+
+cd C:\z\openApi3\wars
+
+cd /var/zcee/openApi3/apps
+
+------------ Updating the server xml ---------------------------------------
+
+<webApplication id="cics" contextRoot="/cscvinc"  name="cicsAPI"           
+  location="${server.config.dir}apps/cscvinc.war"/>        
+      
+  
+F  ZCEEAPI3,REFRESH,CONFIG 
+
+-------------- Defining the required RACF EJBRole resources -------------
+
+rdefine ejbrole ATSZDFLT.cicsAPI.Manager   uacc(none)                                                              
+
+rdefine ejbrole ATSZDFLT.cicsAPI.Staff  uacc(none)         
+                                                                                                                               
+permit ATSZDFLT.cicsAPI.Manager  class(ejbrole) id(fred) acc(read)                                                                                                                                                            
+
+permit ATSZDFLT.cicsAPI.Staff  class(ejbrole) id(fred) acc(read)                                                                                                                                        
+
+permit ATSZDFLT.cicsAPI.Staff  class(ejbrole) id(user1) acc(read)                                                  
+
+setropts raclist(ejbrole) refresh
+
+--------------- Testing APIs deployed in a native z/OS server -------------
+
+
+---------- Using Postman --------------------------------------------------------
+
+https://wg31.washington.ibm.com:9445/cscvinc/employee/000102
+
+https://wg31.washington.ibm.com:9445/cscvinc/employee/121212
+
+https://wg31.washington.ibm.com:9445/cscvinc/employee/948498
+
+{
+    "EmployeeInsertServiceOperation": {
+        "employeeData": {
+            "request": {
+                "employeeDetails": {
+                    "employeeNumber": "948498",
+                    "date": "12/31/22",
+                    "amount": "$100.00",
+                    "address": "RTP NC",
+                    "phoneNumber": "0065",
+                    "name": "M Johnson"
+                }
+            }
+        }
+    }
+}
+
+https://wg31.washington.ibm.com:9445/cscvinc/employee/948498
+
+{
+    "EmployeeUpdateServiceOperation": {
+        "employeeData": {
+            "request": {
+                "employeeDetails": {
+                    "status": "s",
+                    "name": "A Johnson",
+                    "address": "Apex NC",
+                    "phoneNumber": "0065",
+                    "date": "01/31/23",
+                    "amount": "500",
+                    "COMMENT": "updated"
+                }
+            }
+        }
+    }
+}
+
+
+---------- Using cURL --------------------------------------------------------
+
+curl -X GET  -w " - HTTP CODE %{http_code}" --user Fred:fred --header "Content-Type: application/json" --insecure  https://wg31.washington.ibm.com:9445/cscvinc/employee/222222
+
+curl -X GET  -w " - HTTP CODE %{http_code}" --user user2:user2 --header "Content-Type: application/json" --insecure  https://wg31.washington.ibm.com:9445/cscvinc/employee/222222
+
+curl -X POST -w " - HTTP CODE %{http_code}" --header "Content-Type: application/json" --insecure --user Fred:fred --data @insertCscvinc.json https://wg31.washington.ibm.com:9445/cscvinc/employee/
+
+curl -X PUT -w " - HTTP CODE %{http_code}" --header "Content-Type: application/json" --insecure --user Fred:fred --data @updateCscvinc.json https://wg31.washington.ibm.com:9445/cscvinc/employee/948478
+
+
+curl -X DELETE -w " - HTTP CODE %{http_code}" --header "Content-Type: application/json" --insecure --user Fred:fred  https://wg31.washington.ibm.com:9445/cscvinc/employee/948478
+
+curl -X DELETE -w " - HTTP CODE %{http_code}" --header "Content-Type: application/json" --insecure --user user1:user1  https://wg31.washington.ibm.com:9445/cscvinc/employee/948478
+
+---------- Using the API Explorer----------------------------------------------------
+
+https://wg31.washington.ibm.com:9445/api/explorer
+
+{
+    "EmployeeInsertServiceOperation": {
+        "employeeData": {
+            "request": {
+                "employeeDetails": {
+                    "employeeNumber": "948478",
+                    "date": "12/31/22",
+                    "amount": "$100.00",
+                    "address": "RTP NC",
+                    "phoneNumber": "0065",
+                    "name": "M Johnson"
+                }
+            }
+        }
+    }
+}
+
+{
+    "EmployeeInsertServiceOperation": {
+        "employeeData": {
+            "request": {
+                "employeeDetails": {
+                    "employeeNumber": "948488",
+                    "date": "12/31/22",
+                    "amount": "$100.00",
+                    "address": "RTP NC",
+                    "phoneNumber": "0065",
+                    "name": "M Johnson"
+                }
+            }
+        }
+    }
+}
+
+
+{
+    "EmployeeUpdateServiceOperation": {
+        "employeeData": {
+            "request": {
+                "employeeDetails": {
+                    "status": "s",
+                    "name": "A Johnson",
+                    "address": "Apex NC",
+                    "phoneNumber": "0065",
+                    "date": "01/31/23",
+                    "amount": "500",
+                    "COMMENT": "updated"
+                }
+            }
+        }
+    }
+}
