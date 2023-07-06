@@ -9,7 +9,7 @@ https://designer.washington.ibm.com:9447/zosConnect/designer/
 
 Record with key {{$zosAssetResponse.channel.containerCscvinc."Response-Container"."FILEA-AREA".NUMB}} was successfully inserted - CICS Identity {{$zosAssetResponse.channel.containerCscvinc."Response-Container".USERID}}
 
-Duplicate record key encountered for key {{$apiRequest.body.EmployeeInsertServiceOperation.employeeData.request.employeeDetails.employeeNumber}} - CICS Identity {{$zosAssetResponse.channel.containerCscvinc."Response-Container".USERID}}
+Duplicate record key encountered for key {{$apiRequest.body.cscvincInsertServiceOperation.cscvincContainer.request.filea.employeeNumber}}- CICS Identity {{$zosAssetResponse.channel.containerCscvinc."Response-Container".USERID}}
 
 A severe error occurred while inserting a record with key {{$zosAssetResponse.channel.containerCscvinc."Response-Container"."FILEA-AREA".NUMB}}  - CICS Identity {{$zosAssetResponse.channel.containerCscvinc."Response-Container".USERID}}  {{$zosAssetResponse.channel.containerCscvinc."Response-Container".CEIBRESP}}:  {{$zosAssetResponse.channel.containerCscvinc."Response-Container".CEIBRESP2}}
 
