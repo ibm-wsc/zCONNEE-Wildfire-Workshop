@@ -1,5 +1,5 @@
 //APIDEPLY JOB (0),'ZCEE DEPLOY',CLASS=A,REGION=0M,
-//             MSGCLASS=H,NOTIFY=*,USER=LIBSERV
+//             MSGCLASS=H,NOTIFY=*,USER=LIBSERX
 //***************************************************************
 //*  Step APIDPLOY - Use the apideploy commands to deploy an API
 //***************************************************************
