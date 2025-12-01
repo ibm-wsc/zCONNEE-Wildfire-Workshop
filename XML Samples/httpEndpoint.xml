@@ -1,8 +1,0 @@
-<server description="basic security">
-
-   <httpEndpoint id="defaultHttpEndpoint"
-                 host="${hostName}"
-                 httpPort="${httpPort}"
-                 httpsPort="${httpsPort}" />
-
-</server>
