@@ -1,0 +1,11 @@
+//CICSRCF5 JOB (0),'LIBERTY RACF',CLASS=A,REGION=0M,
+//             MSGCLASS=H,NOTIFY=&SYSUID
+//CLEANUP EXEC PGM=IKJEFT01,REGION=0M
+//SYSTSPRT DD SYSOUT=*
+//SYSTSIN  DD *
+ /* Permit the zCEE server identity to perform privilege functions */
+permit bpx.server class(facility) id(libserv) acc(read)
+
+setropts raclist(facility) refresh
+
+/* extattr +p /usr/lib/java_runtime/libifaedjreg64.so */
