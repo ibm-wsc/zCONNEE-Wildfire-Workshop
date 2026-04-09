@@ -1,0 +1,26 @@
+//ZCEESRVR JOB CLASS=A,REGION=0M,NOTIFY=&SYSUID
+//****************************************************************
+//*  SET SYMBOLS
+//****************************************************************
+//EXPORT EXPORT SYMLIST=(*)
+// SET JAVAHOME='/usr/lpp/java/J8.0_64'
+// SET ZCEEPATH='/usr/lpp/IBM/zosconnect/v3r0'
+// SET SERVER='openApi3'
+// SET TEMPLATE='zosconnect:openApi3'
+// SET WLPUSER='/var/ats/zosconnect'
+// SET USER='ATSSERV'
+// SET GROUP='ATSGRP'
+//****************************************************************
+//*  Step ZCEEAPI3 - Use the zosconnect command to create a server
+//****************************************************************
+//ZCEEAPI3 EXEC PGM=IKJEFT01,REGION=0M
+//SYSTSPRT DD SYSOUT=*
+//SYSERR   DD SYSOUT=*
+//STDOUT   DD SYSOUT=*
+//SYSTSIN  DD *,SYMBOLS=EXECSYS
+ BPXBATCH SH +
+ export JAVA_HOME=&JAVAHOME; +
+ export WLP_USER_DIR=&WLPUSER; +
+ &ZCEEPATH/bin/zosconnect create &SERVER +
+  --template=&TEMPLATE; +
+chown -R &USER:&GROUP $WLP_USER_DIR/servers/&SERVER

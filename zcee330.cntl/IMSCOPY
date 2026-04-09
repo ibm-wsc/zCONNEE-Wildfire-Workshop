@@ -1,0 +1,24 @@
+//JOHNSONS JOB (ACCOUNT),JOHNSON,NOTIFY=JOHNSON,REGION=0M,              00010000
+// CLASS=A,MSGCLASS=H,MSGLEVEL=(1,1)                                    00020000
+//COPYBOOK PROC MEMBER=                                                 00021000
+//IEBCOPY EXEC PGM=IEBCOPY                                              00022000
+//SYSPRINT DD SYSOUT=*                                                  00023000
+//INDD1    DD DISP=SHR,DSN=USER1.&MEMBER                                00024000
+//OUTDD1   DD DISP=SHR,DSN=USER1.ZCEE.SOURCE(&MEMBER)                   00025000
+//SYSUT3   DD UNIT=VIO,DISP=(,DELETE),SPACE=(80,(60,45))                00026000
+//SYSUT4   DD UNIT=VIO,DISP=(,DELETE),SPACE=(256,(15,1)),DCB=KEYLEN=8   00027000
+//SYSIN    DD *                                                         00028000
+ COPY      INDD=((INDD1,R)),OUTDD=OUTDD1                                00029000
+//PEND                                                                  00030000
+//IMS00I01 EXEC COPYBOOK,MEMBER=IMS00I01                                00040000
+//IMS00Q01 EXEC COPYBOOK,MEMBER=IMS00Q01                                00050000
+//IMS00P01 EXEC COPYBOOK,MEMBER=IMS00P01                                00060000
+//IMS01I01 EXEC COPYBOOK,MEMBER=IMS01I01                                00070000
+//IMS01Q01 EXEC COPYBOOK,MEMBER=IMS01Q01                                00080000
+//IMS01P01 EXEC COPYBOOK,MEMBER=IMS01P01                                00090000
+//IMS02I01 EXEC COPYBOOK,MEMBER=IMS02I01                                00100000
+//IMS02Q01 EXEC COPYBOOK,MEMBER=IMS02Q01                                00110000
+//IMS02P01 EXEC COPYBOOK,MEMBER=IMS02P01                                00120000
+//IMS03I01 EXEC COPYBOOK,MEMBER=IMS03I01                                00130000
+//IMS03Q01 EXEC COPYBOOK,MEMBER=IMS03Q01                                00140000
+//IMS03P01 EXEC COPYBOOK,MEMBER=IMS03P01                                00150000

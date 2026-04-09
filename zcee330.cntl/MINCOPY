@@ -1,0 +1,16 @@
+//JOHNSONS JOB (ACCOUNT),JOHNSON,NOTIFY=JOHNSON,REGION=0M,              00010000
+// CLASS=A,MSGCLASS=H,MSGLEVEL=(1,1)                                    00020000
+//COPYBOOK PROC MEMBER=                                                 00021000
+//IEBCOPY EXEC PGM=IEBCOPY                                              00022000
+//SYSPRINT DD SYSOUT=*                                                  00023000
+//INDD1    DD DISP=SHR,DSN=USER1.&MEMBER                                00024000
+//OUTDD1   DD DISP=SHR,DSN=USER1.ZCEE.SOURCE(&MEMBER)                   00025000
+//SYSUT3   DD UNIT=VIO,DISP=(,DELETE),SPACE=(80,(60,45))                00026000
+//SYSUT4   DD UNIT=VIO,DISP=(,DELETE),SPACE=(256,(15,1)),DCB=KEYLEN=8   00027000
+//SYSIN    DD *                                                         00028000
+ COPY      INDD=((INDD1,R)),OUTDD=OUTDD1                                00029000
+//PEND                                                                  00030000
+//MIN00I01 EXEC COPYBOOK,MEMBER=MIN00I01                                00040000
+//MIN00P01 EXEC COPYBOOK,MEMBER=MIN00P01                                00060000
+//MIN01I01 EXEC COPYBOOK,MEMBER=MIN01I01                                00070000
+//MIN01Q01 EXEC COPYBOOK,MEMBER=MIN01Q01                                00080000
