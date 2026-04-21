@@ -1,0 +1,13 @@
+<server description="cics policy">
+
+<!-- zosConnect APIs -->
+   <zosconnect_zosConnectAPIs pollingRate="5s" updateTrigger="polled"
+       policyRef="cicsPolicy"
+ />
+
+<zosconnect_policy id="cicsPolicy"
+   location="${server.config.dir}resources/zosconnect/rules">
+   <ruleset file="cicsRules.xml"/>
+</zosconnect_policy>
+
+</server>

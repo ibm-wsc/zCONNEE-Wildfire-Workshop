@@ -1,0 +1,1 @@
+<server description="DB2 REST"> <zosconnect_zosConnectServiceRestClientConnection id="Db2Conn"       host="wg31.washington.ibm.com"       port="2446"       basicAuthRef="dsn2Auth" /> <zosconnect_zosConnectServiceRestClientBasicAuth id="dsn2Auth"       userName="USER1"       password="USER1"/></server>

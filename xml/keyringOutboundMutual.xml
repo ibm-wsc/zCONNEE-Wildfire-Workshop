@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="mutual security">
+
+    <!-- Enable features -->
+    <featureManager>
+         <feature>transportSecurity-1.0</feature>
+    </featureManager>
+
+    <sslDefault sslRef="DefaultSSLSettings"
+      outboundSSLRef="OutboundSSLSettings" />
+
+    <ssl id="DefaultSSLSettings"
+       keyStoreRef="CellDefaultKeyStore"
+       trustStoreRef="CellDefaultKeyStore"
+       clientAuthenticationSupported="true"
+       clientAuthentication="true"/>
+
+    <keyStore id="CellDefaultKeyStore"
+       location="safkeyring:///Liberty.KeyRing"
+       password="password" type="JCERACFKS"
+       fileBased="false" readOnly="true" />
+
+    <ssl id="OutboundSSLSettings"
+       keyStoreRef="OutboundKeyStore"
+       trustStoreRef="OutboundKeyStore"/>
+
+    <keyStore id="OutboundKeyStore"
+       location="safkeyring:///zCEE.KeyRing"
+       password="password" type="JCERACFKS"
+       fileBased="false" readOnly="true" />
+
+</server>
